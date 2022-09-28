@@ -261,13 +261,17 @@ class EightPuzzle(Problem):
     def check_solvability(self, state):
         """ Checks if the given state is solvable """
 
+        state= state.replace("_","0")
+
         inversion = 0
         for i in range(len(state)):
             for j in range(i + 1, len(state)):
                 if (state[i] > state[j]) and state[i] != '_' and state[j] != '_':
                     inversion += 1
 
-        return inversion % 2 == 0
+        state= state.replace("0","_")
+
+        return inversion % 2 == 0 and len(set(state)) == 9
    
 # ______________________________________________________________________________
 # EightPuzzle with misplaced tile heuristics

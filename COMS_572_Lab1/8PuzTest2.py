@@ -8,10 +8,10 @@ from Pformulation import *
 from search import *
 import time
 
-#initial = "531_87264"
+initial = "531_87264"
 #initial = "12345_678"
 #S1.txt
-initial = "352617_84"
+#initial = "352617_84"
 problem = EightPuzzle(initial)
 solvable = ""
 if problem.check_solvability:

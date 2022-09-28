@@ -101,8 +101,8 @@ def breadth_first_graph_search(problem, starttime):
     while frontier:
         #MODIFIED time
         currtime = time.time()
-        if currtime - starttime >= 900:
-            return Node("Overtime")
+        if currtime - starttime >= 30:
+            return Node("Timed out.")
 
         node = frontier.popleft()
         explored.add(node.state)
@@ -136,8 +136,8 @@ def depth_limited_search(problem, starttime, limit=50):
     def recursive_dls(node, problem, limit, starttime):
         #MODIFIED time
         currtime = time.time()
-        if currtime - starttime >= 900:
-            return Node("Overtime")
+        if currtime - starttime >= 30:
+            return Node("Timed out.")
 
         if problem.goal_test(node.state):
             #MODIFIED
@@ -187,8 +187,8 @@ def best_first_graph_search(problem, starttime, f, display=False):
     while frontier:
         #MODIFIED time
         currtime = time.time()
-        if currtime - starttime >= 900:
-            return Node("Overtime")
+        if currtime - starttime >= 30:
+            return Node("Timed out.")
 
         node = frontier.pop()
         if problem.goal_test(node.state):

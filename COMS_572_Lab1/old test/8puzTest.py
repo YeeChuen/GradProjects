@@ -72,12 +72,14 @@ print(test)
 #old practice code below
 '''
 print("practice zone")
-contents = args.fPath
 algo = args.alg
 print("Filename: "+ contents)
 print("Algorithm: "+ algo)
+contents = args.fPath
 puzzlefile = open(contents)
 puzzle = puzzlefile.read()
+a = puzzle.replace(" ","")
+initialstate = a.replace("\n","")
 print(puzzle)
 print(type(puzzle))
 
@@ -110,9 +112,7 @@ print(" ")
 
 goalfile = open("SGoal.txt")
 goal = goalfile.read()
-a = puzzle.replace(" ","")
 b = goal.replace(" ","")
-initialstate = a.replace("\n","")
 goalstate = b.replace("\n","")
 i = "12345_678"
 problem = Problem(i, goalstate)
