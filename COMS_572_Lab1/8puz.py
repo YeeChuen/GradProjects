@@ -8,11 +8,16 @@ from Pformulation import *
 from search import *
 import time
 
+#choose time limit for each algo
+'''Edit minimum time here
+currently set at 10'''
+mintime = 10
+
 '''
 NOTES
-- current overtime using is 120s to be change to 900s
-- how to read/access folder
-- make it so it can run all files at once
+- MUST DO current overtime using is 120s to be change to 900s
+- MUST DO how to read/access folder
+- MUST DO make it so it can run all files at once
 '''
 
 #create parser
@@ -38,7 +43,10 @@ algo = args.alg
 #a function to help printing
 def printresult(search, starttime):
     endtime = time.time()
-    if search.state == "Timed out.":
+    if search == None:
+        print("search algo failed")
+
+    elif search.state == "Timed out.":
         print("Total nodes generated: <<??>>")
         print("Total time taken: >15 min")
         print("Path length: "+search.state)
@@ -74,33 +82,38 @@ else:
     if algo == "BFS" or algo == "all":
         starttime = time.time()
         print(contents+" on BFS ---")
-        printresult(breadth_first_graph_search(problem, starttime), starttime)
+        printresult(breadth_first_graph_search(problem, starttime, mintime), starttime)
 
     #IDS
+    '''
+    note: nodes generated in IDS is much higher
+    as nodes in every depth limit is counted as generated,
+    and not just only when the solution is found.
+    '''
     if algo == "IDS" or algo == "all":
         starttime = time.time()
         print(contents+" on IDS ---")
-        printresult(iterative_deepening_search(problem, starttime), starttime)
+        printresult(iterative_deepening_search(problem, starttime, mintime), starttime)
 
     #h1
     if algo == "h1" or algo == "all":
         starttime = time.time()
         print(contents+" on h1 ---")
         problem = EightPuzzleH1(initialstate)
-        printresult(astar_search(problem, starttime), starttime)
+        printresult(astar_search(problem, starttime, mintime), starttime)
 
     #h2
     if algo == "h2" or algo == "all":
         starttime = time.time()
         print(contents+" on h2 ---")
         problem = EightPuzzleH2(initialstate)
-        printresult(astar_search(problem, starttime), starttime)
+        printresult(astar_search(problem, starttime, mintime), starttime)
 
     #h3
     if algo == "h3" or algo == "all":
         starttime = time.time()
         print(contents+" on h3 ---")
         problem = EightPuzzleH3(initialstate)
-        printresult(astar_search(problem, starttime), starttime)
+        printresult(astar_search(problem, starttime, mintime), starttime)
 
 

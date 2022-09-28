@@ -86,7 +86,7 @@ class Node:
 # ______________________________________________________________________________
 # BFS (Breadth First Graph Search)
 #MODIFIED time
-def breadth_first_graph_search(problem, starttime):
+def breadth_first_graph_search(problem, starttime, mintime):
     """[Figure 3.11]
     Note that this function can be implemented in a
     single line as below:
@@ -101,7 +101,7 @@ def breadth_first_graph_search(problem, starttime):
     while frontier:
         #MODIFIED time
         currtime = time.time()
-        if currtime - starttime >= 30:
+        if currtime - starttime >= mintime:
             return Node("Timed out.")
 
         node = frontier.popleft()
@@ -118,60 +118,93 @@ def breadth_first_graph_search(problem, starttime):
 
 # ______________________________________________________________________________
 # IDS (Iterative Deepening Search)
-def iterative_deepening_search(problem, starttime):
+
+def iterative_deepening_search(problem, starttime, mintime):
     """[Figure 3.18]"""
-    for depth in range(sys.maxsize):
-        result = depth_limited_search(problem, starttime, depth)
-        if result != 'cutoff':
+    #totalnode keep track of total number of generated node
+    #in each depth
+    totalnode=0
+
+    for depth in range(0,50):
+        result = depth_limited_search(problem, starttime,totalnode,mintime, depth)
+        if result.state != 'cutoff':
+            #print("depth: "+str(depth)+ ", node at depth: "+ str(result.nodeNum)+", totalnode: "+str(result.nodeNum+totalnode))
+            result.nodeNum+=totalnode
             return result
-
-def depth_limited_search(problem, starttime, limit=50):
-    """[Figure 3.17]"""
+        #right here, the total node during any depth search is return 
+        #with a node containing the total node in node.nodeNum
+        #and the state 'cutoff' to indicate it is cutted off with n amount of node generated
+        totalnode += result.nodeNum
+        #print("depth: "+str(depth)+ ", node at depth: "+ str(result.nodeNum)+", totalnode: "+str(totalnode))
     
-    #MODIFIED
-    explored = set()
-    explored.add(problem.initial)
+    #MODIFIED below checks if cutoff work properly
+    if result.state == 'cutoff':
+        '''below prints the cutoff'''
+        #print("depth reaches cutoff limit")
+        #print("depth is "+str(depth))
+        return None
+            
 
-    #MODIFIED
-    def recursive_dls(node, problem, limit, starttime):
+def depth_limited_search(problem, starttime,totalnode,mintime, limit=50):
+    """[Figure 3.17]"""
+    #TRY2 using list
+    nodelist = []
+
+    def recursive_dls(node, problem, limit, starttime, totalnode,mintime):
         #MODIFIED time
         currtime = time.time()
-        if currtime - starttime >= 30:
+        #TRY2 does not removes duplicate, 
+        #which is good as same node can appear in different path, 
+        #as long as its not cycle
+        nodelist.append(node)
+
+        if currtime - starttime >= mintime:
             return Node("Timed out.")
 
         if problem.goal_test(node.state):
             #MODIFIED
-            node.updateNodeNum(len(explored)+1)
-
+            node.updateNodeNum(len(nodelist))
             return node
+
         elif limit == 0:
-            return 'cutoff'
+            #MODIFIED, change cutoff to Node with state cutoff
+            cutoff = Node('cutoff')
+            cutoff.updateNodeNum(len(nodelist))
+            return cutoff
         else:
             cutoff_occurred = False
             for child in node.expand(problem):
-                if child.state not in explored:
-                    explored.add(child.state)
-                    result = recursive_dls(child, problem, limit - 1, starttime)
-                    if result == 'cutoff':
-                        cutoff_occurred = True
-                    elif result is not None:
-                        return result
-            return 'cutoff' if cutoff_occurred else None
+
+                #TRY2 WORK
+                ancestor = child.path()
+                ancestor.remove(child)
+
+                if child in ancestor:
+                    continue
+
+                result = recursive_dls(child, problem, limit - 1, starttime, totalnode,mintime)
+                
+                #MODIFIED add a new constrain, is not None
+                if result is not None and result.state == 'cutoff':
+                    cutoff_occurred = True
+                elif result is not None:
+                    return result
+            return result if cutoff_occurred else None
 
     # Body of depth_limited_search:
     #MODIFIED
-    return recursive_dls(Node(problem.initial), problem, limit, starttime)
+    return recursive_dls(Node(problem.initial), problem, limit, starttime, totalnode,mintime)
 
 # ______________________________________________________________________________
 # A*
-def astar_search(problem, starttime, h=None, display=False):
+def astar_search(problem, starttime,mintime, h=None, display=False):
     """A* search is best-first graph search with f(n) = g(n)+h(n).
     You need to specify the h function when you call astar_search, or
     else in your Problem subclass."""
     h = memoize(h or problem.h, 'h')
-    return best_first_graph_search(problem, starttime, lambda n: n.path_cost + h(n), display)
+    return best_first_graph_search(problem, starttime, mintime, lambda n: n.path_cost + h(n), display)
 
-def best_first_graph_search(problem, starttime, f, display=False):
+def best_first_graph_search(problem, starttime,mintime, f, display=False):
     """Search the nodes with the lowest f scores first.
     You specify the function f(node) that you want to minimize; for example,
     if f is a heuristic estimate to the goal, then we have greedy best
@@ -187,7 +220,7 @@ def best_first_graph_search(problem, starttime, f, display=False):
     while frontier:
         #MODIFIED time
         currtime = time.time()
-        if currtime - starttime >= 30:
+        if currtime - starttime >= mintime:
             return Node("Timed out.")
 
         node = frontier.pop()
