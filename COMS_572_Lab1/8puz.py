@@ -42,7 +42,7 @@ algo = args.alg
 #have a global dict to track total runtime and total generated node
 #key: algorithm name (BFS/IDS/h1/h2/h3)
 #value: list of [totalruntime, totalgenerated node]
-dict = {"BFS":[0,0], "IDS":[0,0],"h1":[0,0],"h2":[0,0],"h3":[0,0], "run":[0,0]}
+dict = {"BFS":[0,0,0], "IDS":[0,0,0],"h1":[0,0,0],"h2":[0,0,0],"h3":[0,0,0]}
 
 #printresult function to help printing
 def printresult(search, starttime, algo, hidedetail):
@@ -69,7 +69,7 @@ def printresult(search, starttime, algo, hidedetail):
 
     #prints detail of algorithm
     else:
-        dict["run"][0]+=1
+        dict[algo][2]+=1
         if hidedetail == False:
             print("Total nodes generated: "+str(search.nodeNum))
             print("Total time taken: "+str(round(endtime-starttime, 5))+" seconds")
@@ -88,24 +88,24 @@ def printresult(search, starttime, algo, hidedetail):
 #then show algorithm that is used. and their average
 def printavgresult(algo, numtest):
     totaltest = numtest
-    testperalgo = dict["run"][0]
+    totalpass = 0
+    for key in dict:
+        totalpass+=dict[key][2]
     if algo == "all":
         totaltest*=5
-        testperalgo/=5
 
     print("")
-    print(str(dict["run"][0]) + "/" + str(totaltest) + "successfully run")
+    print(str(totalpass) + "/" + str(totaltest) + "successfully run")
     print("")
 
     #average algo serve to print the average result
     def average(algo):
-        tempList = dict[algo]
-        totaltime = tempList[0]
-        totalnode = tempList[1]
-        title = "Average result of {} ------------------------"
+        title = "Average result of {} ----------------------{}"
         print(title.format(algo))
-        print("| Average run time: " + str(totaltime/testperalgo))
-        print("| Average node explored: " + str(round(totalnode/testperalgo, 1)))
+        success = "| {}/{} success"
+        print(success.format(dict[algo][2],numtest))
+        print("| Average run time: " + str(dict[algo][0]/dict[algo][2]))
+        print("| Average node explored: " + str(round(dict[algo][1]/dict[algo][2], 1)))
         print("----------------------------------------------")
         print("")
 
