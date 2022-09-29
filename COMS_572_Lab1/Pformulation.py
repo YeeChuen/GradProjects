@@ -288,7 +288,7 @@ class EightPuzzleH2(EightPuzzle):
         """ Return the heuristic value for a given state."""
         # Manhattan Heuristic Function
         dist = {"1":"012123234", "2":"101212323", "3":"210321432", "4":"123012123", "5":"212101212", 
-        "6":"321210321", "7":"2340123012", "8":"323212101", "_":"432321210"}  
+                "6":"321210321", "7":"234123012", "8":"323212101", "_":"432321210"}   
         heuristic = 0
         for x in node.state:
             goal = dist[x]
