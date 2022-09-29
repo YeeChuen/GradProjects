@@ -98,13 +98,15 @@ def printavgresult(algo, numtest):
     print(str(totalpass) + "/" + str(totaltest) + "successfully run")
     print("")
 
+    if totalpass == 0:
+        return
     #average algo serve to print the average result
     def average(algo):
         title = "Average result of {} ---------------------- {}"
         print(title.format(algo,algo))
         success = "| {}/{} success"
         print(success.format(dict[algo][2],numtest))
-        print("| Average run time: " + str(dict[algo][0]/dict[algo][2]))
+        print("| Average run time: " + str(round(dict[algo][0]/dict[algo][2],5)))
         print("| Average node explored: " + str(round(dict[algo][1]/dict[algo][2], 1)))
         print("----------------------------------------------")
         print("")
@@ -141,7 +143,7 @@ def runtest(contents, algo, hidedetail):
         #BFS
         if algo == "BFS" or algo == "all":
             starttime = time.time()
-            print("running "+contents+" puzzle on BFS ---")
+            print("--- running "+contents+" puzzle on BFS ---")
             printresult(breadth_first_graph_search(problem, starttime, mintime), starttime, "BFS", hidedetail)
             valid+=1
 
