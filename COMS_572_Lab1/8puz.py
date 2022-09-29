@@ -100,7 +100,7 @@ def printavgresult(algo, numtest):
 
     #average algo serve to print the average result
     def average(algo):
-        title = "Average result of {} ----------------------{}"
+        title = "Average result of {} ---------------------- {}"
         print(title.format(algo,algo))
         success = "| {}/{} success"
         print(success.format(dict[algo][2],numtest))
