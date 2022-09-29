@@ -129,6 +129,7 @@ def runtest(contents, algo, hidedetail):
     problem = EightPuzzle(initialstate)
 
     #check problem solvability
+    print("")
     print("txt file("+ contents +") solvability = "+str(problem.check_solvability(initialstate)))
     print("")
 
