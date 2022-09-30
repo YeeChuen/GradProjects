@@ -41,8 +41,8 @@ algo = args.alg
 
 #have a global dict to track total runtime and total generated node
 #key: algorithm name (BFS/IDS/h1/h2/h3)
-#value: list of [totalruntime, totalgenerated node]
-dict = {"BFS":[0,0,0], "IDS":[0,0,0],"h1":[0,0,0],"h2":[0,0,0],"h3":[0,0,0]}
+#value: list of [totalruntime, totalgenerated node, successrun]
+dict = {"BFS":[0,0,0], "IDS":[0,0,0],"h1":[0,0,0],"h2":[0,0,0],"h3":[0,0,0], "h4":[0,0,0]}
 
 #printresult function to help printing
 def printresult(search, starttime, algo, hidedetail):
@@ -115,7 +115,7 @@ def printavgresult(algo, numtest):
         average(algo)
 
     else: 
-        algoList = ["BFS", "IDS", "h1", "h2", "h3"]
+        algoList = ["BFS", "IDS", "h1", "h2", "h3", "h4"]
         for x in algoList:
             average(x)
 
@@ -184,11 +184,19 @@ def runtest(contents, algo, hidedetail):
             printresult(astar_search(problem, starttime, mintime), starttime, "h3", hidedetail)
             valid+=1
 
+        #h4
+        if algo == "h4" or algo == "all":
+            starttime = time.time()
+            print("--- running "+contents+" puzzle on h4 ---")
+            problem = EightPuzzleH4(initialstate)
+            printresult(astar_search(problem, starttime, mintime), starttime, "h4", hidedetail)
+            valid+=1
+
         #valid = 0 indicate algo is not valid
         if valid==0:
             print("algorithm for --algo is not valid")
             print("please input one of the following after --algo:")
-            print("--algo (BFS/IDS/h1/h2/h3/all)")
+            print("--algo (BFS/IDS/h1/h2/h3/h4/all)")
             print("note* add '*' at the end to only show average result on algorithm ")
             print("      add '**' at the end to show both detail and average result on algorithm ")
             print("")

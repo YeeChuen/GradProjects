@@ -327,4 +327,51 @@ class EightPuzzleH3(EightPuzzle):
         node.state= node.state.replace("9","_")
 
         return heuristic
+
+# ______________________________________________________________________________
+# EightPuzzle with Custom heuristics 2
+# heuristic takes into account the number of direct adjacent tile reversals present
+# using previous heuristic in h3, also taking the number of inverse into consideration.
+# for example, if 
+'''
+8 1 2
+3 4 5
+6 7 _
+'''
+# the number of inversion is 7, for (8,1), (8,2), (8,3), ... etc, 
+# if a bigger number comes before a smaller number its an inversion
+class EightPuzzleH4(EightPuzzle):
+    def h(self, node):
+        """ Return the heuristic value for a given state."""
+        #Custom Function
+        #first run exact manhattan 
+        dist = {"1":"012123234", "2":"101212323", "3":"210321432", "4":"123012123", "5":"212101212", 
+                "6":"321210321", "7":"234123012", "8":"323212101", "_":"432321210"}  
+        heuristic = 0
+        for x in node.state:
+            goal = dist[x]
+            heuristic = heuristic+int(goal[node.state.find(x)])
+            
+        #find direct reversal 
+        node.state= node.state.replace("_","9")
+
+        for x in node.state:
+            lookForStr = int(node.state.find(x)) +1
+            check = int(x) -1
+            if int(node.state[check]) == int(x):
+                continue
+            if int(node.state[check]) == lookForStr:
+                heuristic+=1
+
+        node.state= node.state.replace("9","_")
+
+        inversion = 0
+        for i in range(len(node.state)):
+            for j in range(i + 1, len(node.state)):
+                if (node.state[i] > node.state[j]) and node.state[i] != '_' and node.state[j] != '_':
+                    inversion += 1
+        
+        heuristic+=inversion
+
+        return heuristic
         
