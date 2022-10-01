@@ -92,7 +92,7 @@ def printavgresult(algo, numtest):
     for key in dict:
         totalpass+=dict[key][2]
     if algo == "all":
-        totaltest*=5
+        totaltest*=len(dict)
 
     print("")
     print(str(totalpass) + "/" + str(totaltest) + "successfully run")
