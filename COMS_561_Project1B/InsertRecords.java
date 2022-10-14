@@ -7,14 +7,14 @@
 /**
  * assumption that project1B database has been created
  */
-package Project1B_JDBC;
+//package Project1B_JDBC;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
+//import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -131,7 +131,7 @@ public class InsertRecords {
 
 		
 		//login user 
-		String dbServer = "jdbc:mysql://127.0.0.1:3306/";
+		//String dbServer = "jdbc:mysql://127.0.0.1:3306/";
 		String dbTest = "jdbc:mysql://";
 		String userName = "";
 		String password = "";

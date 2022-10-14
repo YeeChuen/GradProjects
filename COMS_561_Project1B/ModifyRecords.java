@@ -10,7 +10,7 @@
  * 2) Change the major of the student with ssn = 746897816 to Computer Science, Master. 
  * 3) Delete all registration records that were in “Spring2021”,
  */
-package Project1B_JDBC;
+//package Project1B_JDBC;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -133,7 +133,7 @@ public class ModifyRecords {
 
 		
 		//login user 
-		String dbServer = "jdbc:mysql://127.0.0.1:3306/";
+		//String dbServer = "jdbc:mysql://127.0.0.1:3306/";
 		String dbTest = "jdbc:mysql://";
 		String userName = "";
 		String password = "";

@@ -34,7 +34,7 @@ select s.name
 from students s join minor m on s.snum = m.snum;
  *
  */
-package Project1B_JDBC;
+//package Project1B_JDBC;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -153,7 +153,7 @@ public class Query {
 
 		
 		//login user 
-		String dbServer = "jdbc:mysql://127.0.0.1:3306/";
+		//String dbServer = "jdbc:mysql://127.0.0.1:3306/";
 		String dbTest = "jdbc:mysql://";
 		String userName = "";
 		String password = "";

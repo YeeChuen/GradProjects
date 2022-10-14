@@ -4,7 +4,7 @@
  * Reference: COM S Teachin staff, 
  * - Skeleton of the code acquire from previous project in COM S 363
  */
-package Project1B_JDBC;
+//package Project1B_JDBC;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -126,7 +126,7 @@ public class DropTables {
 
 		
 		//login user 
-		String dbServer = "jdbc:mysql://127.0.0.1:3306/";
+		//String dbServer = "jdbc:mysql://127.0.0.1:3306/";
 		String dbTest = "jdbc:mysql://";
 		String userName = "";
 		String password = "";

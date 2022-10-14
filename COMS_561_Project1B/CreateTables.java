@@ -7,17 +7,16 @@
 /**
  * NOTES:
  *  - Line 143-150 to be edited again (username, password, servername, portnum)
- *  - TODO at Line 127 (complete catch block)
  */
 
-package Project1B_JDBC;
+//package Project1B_JDBC;
 
 import java.sql.*;
-import java.util.*;
+//import java.util.*;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.io.*;
+//import java.io.*;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -25,13 +24,13 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import org.w3c.dom.Document;
+// import javax.xml.transform.Transformer;
+// import javax.xml.transform.TransformerConfigurationException;
+// import javax.xml.transform.TransformerException;
+// import javax.xml.transform.TransformerFactory;
+// import javax.xml.transform.dom.DOMSource;
+// import javax.xml.transform.stream.StreamResult;
+// import org.w3c.dom.Document;
 
 public class CreateTables {
 	
@@ -134,7 +133,7 @@ public class CreateTables {
 
 		
 		//login user 
-		String dbServer = "jdbc:mysql://127.0.0.1:3306/";
+		//String dbServer = "jdbc:mysql://127.0.0.1:3306/";
 		String dbTest = "jdbc:mysql://";
 		String userName = "";
 		String password = "";
