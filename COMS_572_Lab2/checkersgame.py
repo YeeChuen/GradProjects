@@ -642,7 +642,7 @@ class checkers():
         if finaltuple[0]==0 or finaltuple[0]==len(board)-1:
             if piece_to_move=="B" or piece_to_move=="D":
                 board[finaltuple[0]][finaltuple[1]]="D"
-            if piece_to_move=="W" or piece_to_move=="W":
+            if piece_to_move=="W" or piece_to_move=="V":
                 board[finaltuple[0]][finaltuple[1]]="V"
         else:
             board[finaltuple[0]][finaltuple[1]]=piece_to_move
@@ -683,11 +683,11 @@ class checkers():
         if self.piecesdict[oponent]==0 or not self.get_all_actions(board,oponent):
             if player =="2":
                 #TO BE DELETED
-                print("compute_utility with reward for player 2")
+                #print("compute_utility with reward for player 2")
                 return 1
             else:
                 #TO BE DELETED
-                print("compute_utility with deduction for player 2")
+                #print("compute_utility with deduction for player 2")
                 return -1
         else:
             #TO BE DELETED
@@ -709,15 +709,15 @@ class checkers():
         # TODO
         
         # TO BE DELETED
-        if not self.actions(state):
-            print("no actions left")
-        elif self.piecesdict["1"]==0:
-            print("no pieces left for player 1")
-        elif self.piecesdict["2"]==0:
-            print("no pieces left for player 2")
-        if self.utility(state, self.to_move(self.initial))!=0:
+        #if not self.actions(state):
+            #print("no actions left")
+        #elif self.piecesdict["1"]==0:
+            #print("no pieces left for player 1")
+        #elif self.piecesdict["2"]==0:
+            #print("no pieces left for player 2")
+        #if self.utility(state, self.to_move(self.initial))!=0:
             #print(self.utility(state, self.to_move(self.initial)))
-            print("player 2 is awarded or deducted point")
+            #print("player 2 is awarded or deducted point")
 
         return not self.actions(state) or self.piecesdict["1"]==0 or self.piecesdict["2"]==0 or self.utility(state, self.to_move(self.initial))!=0
 
@@ -881,7 +881,7 @@ class checkers():
 
                 elif turn == 1:
                     # TODO: below is original
-                    move = alpha_beta_cutoff_search(state, self)
+                    move = alpha_beta_cutoff_search(state, self, 100)
 
                     # TO BE DELETED
                     self.printboard(state)
@@ -934,9 +934,9 @@ class checkers():
                 print("AI vs AI game, currently its player {}'s turn".format(state.to_move))
 
                 if turn == 0:
-                    print("---------------------------------- this run 1 ----------------------------------")
+                    #print("---------------------------------- this run 1 ----------------------------------")
                     # TODO: below is original
-                    move = alpha_beta_cutoff_search(state, self, 1000)
+                    move = alpha_beta_cutoff_search(state, self, 100)
 
                     # TO BE DELETED
                     self.printboard(state)
@@ -946,7 +946,7 @@ class checkers():
                     state = self.result(state, move)
 
                 elif turn == 1:
-                    print("---------------------------------- this run 2 ----------------------------------")
+                    #print("---------------------------------- this run 2 ----------------------------------")
                     # TODO: below is original
                     move = alpha_beta_cutoff_search(state, self)
 
