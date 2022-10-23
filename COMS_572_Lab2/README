@@ -1,1 +1,29 @@
-Not started yet
+Author: Yee Chuen Teoh
+Title: COM S 572 Lab 2
+
+How to run main.py
+
+Instruction:
+- add main.py, checkersgame.py, and utils.py are placed in the same folder (example 'Lab2')
+- Open terminal, first change the dist by typing in 'C:' (could be 'E:' if you file is in E: disk)
+- then change directory to the folder directory
+    > to do this, type 'cd C:\filename\filename\Lab2' (filename indicate folder name before Lab2 and before that)
+- now that you are in the right directory
+- type the following to run 8puz.py
+    > 'python main.py
+    > the console will then prompt you to choose game mode
+    > 4 game mode available, 2 player, 1 player vs AI, AI vs AI and test eval
+    > 2 player game mode
+        > allow 2 players to play against each other
+    > 1 player game mode
+        > allow single player to play against an AI
+        > you would allow to choose different AI level and depth
+            > level range from E to M to H, easy to medium to hard
+            > depth range are from 1-10
+    > AI vs AI game mode
+        > two bot AI going against each other
+            > level range from E to M to H, easy to medium to hard
+            > depth range are from 1-10
+    > test eval
+        > this game mode is for testing eval function
+- enjoy the game

@@ -13,9 +13,12 @@ import itertools
 import random
 from collections import namedtuple
 from sre_parse import State
+from this import d
 import numpy as np
 from utils import vector_add
-import copy
+from time import time
+import time
+
 
 # ______________________________________________________________________________
 # MinMax Search
@@ -131,46 +134,92 @@ def alpha_beta_search(state, game):
     return best_action
 
 
-def alpha_beta_cutoff_search(oristate, origame, d=4, cutoff_test=None, eval_fn=None):
+def min_test(state,depth, a):
+    space = ""
+    for i in range(0, depth):
+        space += "   "
+    print(space+"--- depth {} LOOP in MIN---".format(str(depth)))
+    print(space+"test in main alpha_beta") 
+    print(space+"trying action: {} on board:".format(str(a)))
+    board = state.board
+    print(space+str(['_', '0', '1', '2', '3', '4', '5', '6', '7']))
+    count=0
+    for list in board:
+        print(space+"[{}]".format(count)+str(list))
+        count+=1
+
+def max_test(state,depth, a):
+    space = ""
+    for i in range(0, depth):
+        space += "   "
+    print(space+"--- depth {} LOOP in MAX---".format(str(depth)))
+    print(space+"test in main alpha_beta") 
+    print(space+"trying action: {} on board:".format(str(a)))
+    board = state.board
+    print(space+str(['_', '0', '1', '2', '3', '4', '5', '6', '7']))
+    count=0
+    for list in board:
+        print(space+"[{}]".format(count)+str(list))
+        count+=1
+
+def alpha_beta_cutoff_search(oristate, origame, d=4, eval_fn=None, cutoff_test=None):
     """Search game to determine best action; use alpha-beta pruning.
     This version cuts off search and uses an evaluation function."""
 
-    # TO BE DELETED
-    #print(str(game.to_move(state)))
+    # TESTING: 3.11pm
+    # added currplayer parameter to max_value and min_value
+    # so that the eval is only for the curr'splayer turn
 
-    newboard = copy.deepcopy(oristate.board)
-    game=checkers(newboard, oristate.utility, oristate.to_move)
-    state=game.initial
-    player = game.to_move(state)
-    print("bot player: {}".format(player))
-
+    def deepCopyCheckers(state):   
+        newboard = copy.deepcopy(state.board)
+        return checkers(newboard, state.utility, state.to_move)
 
     # Functions used by alpha_beta
-    def max_value(state, alpha, beta, depth):
-        # TO BE DELETED
-        #print("test in main max_value")
-        #print(game.printboard(state))
+    def max_value(oristate, alpha, beta, depth, currplayer):
+        if cutoff_test(oristate, depth):
+            # TO BE DELETED
+            #print(" for player {}".format(str(currplayer)))
+            #print(" EVAL SCORE: {}".format(str(eval_fn(oristate, currplayer))))
 
-        if cutoff_test(state, depth):
-            return eval_fn(state)
+            return eval_fn(oristate, currplayer)
         v = -np.inf
-        for a in game.actions(state):
-            v = max(v, min_value(game.result(state, a), alpha, beta, depth + 1))
+        origame=deepCopyCheckers(oristate)
+
+        for a in origame.actions(oristate):
+            # TO BE DELETED
+            #min_test(state, depth, a)
+            # TRY CODE
+            # Deep copy of the game
+            game=deepCopyCheckers(oristate)
+            state=game.initial
+            # TRY END
+
+            v = max(v, min_value(game.result(state, a), alpha, beta, depth + 1, currplayer))
             if v >= beta:
                 return v
             alpha = max(alpha, v)
         return v
 
-    def min_value(state, alpha, beta, depth):
-        # TO BE DELETED
-        #print("test in main min_value")
-        #print(game.printboard(state))
+    def min_value(oristate, alpha, beta, depth, currplayer):
+        if cutoff_test(oristate, depth):
+            # TO BE DELETED
+            #print(" for player {}".format(str(currplayer)))
+            #print(" EVAL SCORE: {}".format(str(eval_fn(oristate, currplayer))))
+            return eval_fn(oristate, currplayer)
 
-        if cutoff_test(state, depth):
-            return eval_fn(state)
         v = np.inf
-        for a in game.actions(state):
-            v = min(v, max_value(game.result(state, a), alpha, beta, depth + 1))
+        origame=deepCopyCheckers(oristate)
+
+        for a in origame.actions(oristate):
+            # TO BE DELETED
+            #min_test(state, depth, a)
+            # TRY CODE
+            # Deep copy of the game
+            game=deepCopyCheckers(oristate)
+            state=game.initial
+            # TRY END
+
+            v = min(v, max_value(game.result(state, a), alpha, beta, depth + 1, currplayer))
             if v <= alpha:
                 return v
             beta = min(beta, v)
@@ -179,23 +228,44 @@ def alpha_beta_cutoff_search(oristate, origame, d=4, cutoff_test=None, eval_fn=N
     # Body of alpha_beta_cutoff_search starts here:
     # The default test cuts off at depth d or at a terminal state
     cutoff_test = (cutoff_test or (lambda state, depth: depth > d or game.terminal_test(state)))
-    eval_fn = eval_fn or (lambda state: game.utility(state, player))
+    eval_fn = eval_fn or (lambda state, player: game.utility(state, player))
     best_score = -np.inf
     beta = np.inf
     best_action = None
+    player = origame.to_move(oristate)
 
-    for a in game.actions(state):
+    for a in origame.actions(oristate):
+        
+        # TRY CODE
         # TO BE DELETED
-        #print("test in main alpha_beta")
-        #print(game.printboard(state))
 
-        v = min_value(game.result(state, a), best_score, beta, 1)
+        # Deep copy of the game
+        game=deepCopyCheckers(oristate)
+        state=game.initial
+
+        # TO BE DELETED
+        def main_test(a, state):
+            print("--- MAIN LOOP ---")
+            print("test in main alpha_beta") 
+            print("trying action: {} on board:".format(str(a)))
+            print(game.printboard(state))
+        
+        #main_test(a, state)
+
+        #print(str(game.to_move(state)))
+        #print("bot player: {}".format(player))
+        # TRY END
+
+
+
+        v = min_value(game.result(state, a), best_score, beta, 1, player)
         if v > best_score:
             best_score = v
             best_action = a
 
     #TO BE DELETED
-    #print(best_action)
+    print("FINAL DECIDED BEST ACTION")
+    print(best_action)
 
     return best_action
 
@@ -750,7 +820,7 @@ class checkers():
         return '<{}>'.format(self.__class__.__name__)
 
     # ignore play_game function
-    def play_game(self, *players):
+    def play_game(self,                                  ):
         # TODO :  check what is this
         """Play an n-person, move-alternating game."""
         state = self.initial
@@ -813,6 +883,7 @@ class checkers():
 
         # TO BE DELETED
         print("start game")
+        #gamestart = time.time()
 
         while True:
                 count+=1
@@ -832,6 +903,10 @@ class checkers():
                     # TO BE DELETED
                     #print("inside play_game 's terminal_test if statement")
 
+                    print("")
+                    print("----- GAME OVER -----")
+                    print("")
+
                     self.display(state)
 
                     #TO BE DELETED
@@ -845,13 +920,19 @@ class checkers():
                     print("current player {} score: {}".format(currplayer,str(self.utility(state, currplayer))))
 
                     print("current player {} score: {}".format(secondplayer,str(self.utility(state, secondplayer))))
+
+                    print("Total rounds: {}".format(str(count)))
+
+                    #gameend = time.time()
+                    #time = gameend - gamestart
+                    #print("Total game time taken: {}".format(str(round(time, 5))))
                     
                     return self.utility(state, self.to_move(self.initial))
 
     # test play game with only 1 player
     # test play game with two payer
     # TODO: fix so that the search dont finish the game 
-    def play_game_oneplayer(self):
+    def play_game_oneplayer(self, level, d):
         # TODO :  check what is this
         """Play an n-person, move-alternating game."""
         state = self.initial
@@ -862,6 +943,8 @@ class checkers():
         # TO BE DELETED
         print("start game")
         print("human = Player 1, AI = Player 2")
+        
+        #gamestart = time.time()
 
         while True:
             for turn in range(0,2):
@@ -880,12 +963,29 @@ class checkers():
                     state = self.result(state, move)
 
                 elif turn == 1:
+                    start = time.time()
+
                     # TODO: below is original
-                    move = alpha_beta_cutoff_search(state, self, 100)
+
+                    if level == "E":
+                        move = alpha_beta_cutoff_search(state, self, d)
+                    elif level == "M":
+                        move = alpha_beta_cutoff_search(state, self, d, self.eval_fn_weak)
+                    elif level == "H":
+                        move = alpha_beta_cutoff_search(state, self, d, self.eval_fn_strong)
+                    elif level == "R":
+                        move = random_player(self, state)
+                    else:
+                        print("unknown level mode selected")
+
+                    
+                    end = time.time()
 
                     # TO BE DELETED
                     self.printboard(state)
+                    print("AI available moves: {}".format(str(self.get_all_actions(state.board, "2"))))
                     print("AI chose move: {}".format(str(move)))
+                    print("Time taken for AI: {}ms".format(str(round(end-start, 5))))
 
                     # TODO: below is original
                     state = self.result(state, move)
@@ -893,6 +993,10 @@ class checkers():
                 if self.terminal_test(state):
                     # TO BE DELETED
                     #print("inside play_game 's terminal_test if statement")
+
+                    print("")
+                    print("----- GAME OVER -----")
+                    print("")
 
                     self.display(state)
 
@@ -907,21 +1011,34 @@ class checkers():
                     print("current player {} score: {}".format(currplayer,str(self.utility(state, currplayer))))
 
                     print("current player {} score: {}".format(secondplayer,str(self.utility(state, secondplayer))))
+
+                    print("Total rounds: {}".format(str(count)))
+
+                    #gameend = time.time()
+                    #time = gameend - gamestart
+                    #print("Total game time taken: {}".format(str(round(time, 5))))
                     
                     return self.utility(state, self.to_move(self.initial))
 
     # the AI vs AI
-    def play_game_AI(self):
+    def play_game_AI(self, AIlevel1, d1, AIlevel2, d2):
         # TODO :  check what is this
         """Play an n-person, move-alternating game."""
         state = self.initial
 
         # TO BE DELETED
         count=0
+        #round limit
+        limit = 100
 
         # TO BE DELETED
         print("start game")
-        print("human = Player 1, AI = Player 2")
+        print("AI = Player 1, AI = Player 2")
+
+        timeAI1list=[]
+        timeAI2list=[]
+
+        #gamestart1 = time.time()
 
         while True:
             for turn in range(0,2):
@@ -935,31 +1052,79 @@ class checkers():
 
                 if turn == 0:
                     #print("---------------------------------- this run 1 ----------------------------------")
+                    start = time.time()
+
                     # TODO: below is original
-                    move = alpha_beta_cutoff_search(state, self, 100)
+                    #move = alpha_beta_cutoff_search(state, self, 100, self.eval_fn_weak)
+                    # no heuristic
+                    if AIlevel1 == "E":
+                        move = alpha_beta_cutoff_search(state, self, d1)
+                    elif AIlevel1 == "M":
+                        move = alpha_beta_cutoff_search(state, self, d1, self.eval_fn_weak)
+                    elif AIlevel1 == "H":
+                        move = alpha_beta_cutoff_search(state, self, d1, self.eval_fn_strong)
+                    elif AIlevel1 == "R":
+                        move = random_player(self, state)
+                    else:
+                        print("unknown level mode selected for AI 1")
+
+                    
+                    end = time.time()
+
+                    timetaken = round(end-start, 5)
+                    timeAI1list.append(timetaken)
+                    #player = state.to_move
 
                     # TO BE DELETED
                     self.printboard(state)
+                    #print("evaluation value: {}".format(str(eval_fn(state, player))))
+                    print("AI available moves: {}".format(str(self.get_all_actions(state.board, "2"))))
                     print("AI chose move: {}".format(str(move)))
+                    print("Time taken for AI: {}ms".format(str(timetaken)))
                     
                     # TODO: below is original
                     state = self.result(state, move)
 
                 elif turn == 1:
                     #print("---------------------------------- this run 2 ----------------------------------")
+                    start = time.time()
+
                     # TODO: below is original
-                    move = alpha_beta_cutoff_search(state, self)
+                    if AIlevel2 == "E":
+                        move = alpha_beta_cutoff_search(state, self, d2)
+                    elif AIlevel2 == "M":
+                        move = alpha_beta_cutoff_search(state, self, d2, self.eval_fn_weak)
+                    elif AIlevel2 == "H":
+                        move = alpha_beta_cutoff_search(state, self, d2, self.eval_fn_strong)
+                    elif AIlevel2 == "R":
+                        move = random_player(self, state)
+                    else:
+                        print("unknown level mode selected for AI 2")
+
+                    
+                    end = time.time()
+
+                    timetaken = round(end-start, 5)
+                    timeAI2list.append(timetaken)
+                    #player = state.to_move
 
                     # TO BE DELETED
                     self.printboard(state)
+                    #print("evaluation value: {}".format(str(eval_fn(state, player))))
+                    print("AI available moves: {}".format(str(self.get_all_actions(state.board, "2"))))
                     print("AI chose move: {}".format(str(move)))
+                    print("Time taken for AI: {}ms".format(str(timetaken)))
                     
                     # TODO: below is original
                     state = self.result(state, move)
 
-                if self.terminal_test(state):
+                if self.terminal_test(state) or count >= limit:
                     # TO BE DELETED
                     #print("inside play_game 's terminal_test if statement")
+
+                    print("")
+                    print("----- GAME OVER -----")
+                    print("")
 
                     self.display(state)
 
@@ -971,12 +1136,178 @@ class checkers():
                     elif currplayer =="2":
                         secondplayer="1"
 
-                    print("current player {} score: {}".format(currplayer,str(self.utility(state, currplayer))))
+                    if count >= limit:
+                        print("Game round limit exceed: {}".format(str(limit)))
+                        print(" DRAW ")
+                    else:
+                        print("WIN: player {}".format(secondplayer))
+                        print("LOST: player {}".format(currplayer))
 
-                    print("current player {} score: {}".format(secondplayer,str(self.utility(state, secondplayer))))
-                    
+
+                    print("Total rounds: {}".format(str(count)))
+                    averageAI1 = round(sum(timeAI1list) / len(timeAI1list),5)
+                    averageAI2 = round(sum(timeAI2list) / len(timeAI2list),5)
+                    print("Average Time taken each round for AI 1: {}ms".format(str(averageAI1)))
+                    print("Average Time taken each round for AI 2: {}ms".format(str(averageAI2)))
+
+                    #gameend1 = time.time()
+                    #time = gameend1 - gamestart1
+                    #print("Total game time taken: {}".format(str(round(time, 5))))
+
                     return self.utility(state, self.to_move(self.initial))
 
+    def play_game_test(self):
+        # TODO :  check what is this
+        """Play an n-person, move-alternating game."""
+        state = self.initial
+
+        # TO BE DELETED
+        count=0
+
+        # round limit
+        limit = 100
+
+        # TO BE DELETED
+        print("start game")
+        print("AI = Player 1, AI = Player 2")
+
+        timeAI1list=[]
+        timeAI2list=[]
+
+        #gamestart1 = time.time()
+
+        while True:
+            for turn in range(0,2):
+                count+=1
+                # TODO: the if statement conditional need to be modified again
+                # TODO: conditional to 1000 so it wont run
+                print("-------------------------------- checkpoint(each turn) ROUND {} --------------------------------".format(str (count)))
+                  
+                # TO BE DELETED
+                print("AI vs AI game, currently its player {}'s turn".format(state.to_move))
+
+                if turn == 0:
+                    #print("---------------------------------- this run 1 ----------------------------------")
+                    start = time.time()
+
+                    """
+                    change eval_fn here
+                    available eval includes:
+                    basic:
+                    eval_fn_weak
+                    eval_fn_strong
+
+                    test eval:
+                    eval_fn_end
+                    - eval that award points for going the other end
+                    eval_fn_die
+                    - eval that award points for getting close to enemy
+                    eval_fn_alive
+                    - eval that award points for staying alive
+                    eval_fn_kill
+                    - eval that award points for any kill
+                    eval_fn_random
+                    - eval that randomly generate eval
+                    """
+                    # CHANGE OPONENT EVAL FUNCTION HERE
+                    # --- TESTZONE AI player 1 ---
+                    move = alpha_beta_cutoff_search(state, self, 4, self.eval_fn_weak)
+                    
+                    end = time.time()
+
+                    timetaken = round(end-start, 5)
+                    timeAI1list.append(timetaken)
+
+                    # TO BE DELETED
+                    self.printboard(state)
+                    print("AI available moves: {}".format(str(self.get_all_actions(state.board, "1"))))
+                    print("AI chose move: {}".format(str(move)))
+                    print("Time taken for AI: {}ms".format(str(timetaken)))
+                    
+                    # TODO: below is original
+                    state = self.result(state, move)
+
+                elif turn == 1:
+                    #print("---------------------------------- this run 2 ----------------------------------")
+                    start = time.time()
+                    """
+                    change eval_fn here
+                    available eval includes:
+                    basic:
+                    eval_fn_weak
+                    eval_fn_strong
+
+                    test eval:
+                    eval_fn_end
+                    - eval that award points for going the other end
+                    eval_fn_die
+                    - eval that award points for getting close to enemy
+                    eval_fn_alive
+                    - eval that award points for staying alive
+                    eval_fn_kill
+                    - eval that award points for any kill
+                    eval_fn_random
+                    - eval that randomly generate eval
+                    """
+                    # --- TEST EVALAUTION FUNCTION HERE / EVALUATION TESTZONE AI player 2 ---
+                    # change your eval function below
+                    eval_fn=self.eval_fn_weak
+
+                    move = alpha_beta_cutoff_search(state, self, 4, eval_fn)
+                    player = state.to_move
+                    
+                    end = time.time()
+                    
+                    timetaken = round(end-start, 5)
+                    timeAI2list.append(timetaken)
+
+                    # TO BE DELETED
+                    self.printboard(state)
+                    print("evaluation value: {}".format(str(eval_fn(state, player))))
+                    print("AI available moves: {}".format(str(self.get_all_actions(state.board, "2"))))
+                    print("AI chose move: {}".format(str(move)))
+                    print("Time taken for AI: {}ms".format(str(timetaken)))
+                    
+                    # TODO: below is original
+                    state = self.result(state, move)
+
+                if self.terminal_test(state) or count >= limit:
+                    # TO BE DELETED
+                    #print("inside play_game 's terminal_test if statement")
+
+                    print("")
+                    print("----- GAME OVER -----")
+                    print("")
+
+                    self.display(state)
+
+                    #TO BE DELETED
+                    currplayer = state.to_move
+                    secondplayer = ""
+                    if currplayer == "1":
+                        secondplayer ="2"
+                    elif currplayer =="2":
+                        secondplayer="1"
+
+                    if count >= limit:
+                        print("Game round limit exceed: {}".format(str(limit)))
+                        print(" DRAW ")
+                    else:
+                        print("WIN: player {}".format(secondplayer))
+                        print("LOST: player {}".format(currplayer))
+
+
+                    print("Total rounds: {}".format(str(count)))
+                    averageAI1 = round(sum(timeAI1list) / len(timeAI1list),5)
+                    averageAI2 = round(sum(timeAI2list) / len(timeAI2list),5)
+                    print("Average Time taken each round for AI 1: {}ms".format(str(averageAI1)))
+                    print("Average Time taken each round for AI 2: {}ms".format(str(averageAI2)))
+
+                    #gameend1 = time.time()
+                    #time = gameend1 - gamestart1
+                    #print("Total game time taken: {}".format(str(round(time, 5))))
+
+                    return self.utility(state, self.to_move(self.initial))
 
 
     # TO BE DELETED
@@ -987,3 +1318,260 @@ class checkers():
         for list in board:
             print("  "+str(count)+str(list))
             count[0]+=1
+
+    # ignore this function, it is already good
+    def cutoff_test(self, state, depth):
+        # uses same statement from terminal state, with addition of depth 
+        # below is just same copy from terminal state
+        return not self.actions(state) or self.piecesdict["1"]==0 or self.piecesdict["2"]==0 or self.utility(state, self.to_move(self.initial))!=0
+
+    # heuristics
+    def eval_fn_weak(self, state, currplayer):
+        # set weak eval function to only look at the pieces rank
+        # normal pieces is 2 point, king pieces is 5 points
+        eval = 0
+        board = state.board
+
+        normalpiece = ""
+        kingpiece = ""
+        list = self.playerdict[currplayer]
+        if list[0] == "B":
+            normalpiece = "B"
+            kingpiece = "D"
+        elif list[0] == "W":
+            normalpiece = "W"
+            kingpiece = "V"
+
+        oponent = ""
+        if currplayer == "1":
+            oponent = "2"
+        elif currplayer == "2":
+            oponent = "1"
+
+        for i in range(0, len(board)):
+            for j in range(0, len(board[0])):
+                if board[i][j] == normalpiece:
+                    eval+=1
+                elif board[i][j] == kingpiece:
+                    eval+=5
+                
+
+        return eval
+
+       # heuristics 
+    def eval_fn_strong(self, state, currplayer):
+        # include eval from weak version, with addition of a few eval
+
+         # set weak eval function to only look at the pieces rank
+        # normal pieces is 2 point, king pieces is 5 points
+        eval = 0
+        board = state.board
+
+        normalpiece = ""
+        kingpiece = ""
+        list = self.playerdict[currplayer]
+        if list[0] == "B":
+            normalpiece = "B"
+            kingpiece = "D"
+        elif list[0] == "W":
+            normalpiece = "W"
+            kingpiece = "V"
+
+        oponent = ""
+        if currplayer == "1":
+            oponent = "2"
+        elif currplayer == "2":
+            oponent = "1"
+
+        for i in range(0, len(board)):
+            for j in range(0, len(board[0])):
+                if board[i][j] == normalpiece:
+                    eval+=1
+                elif board[i][j] == kingpiece:
+                    eval+=5
+        
+        eval += self.eval_fn_end(state, currplayer)
+        
+        eval += self.eval_fn_die(state, currplayer)
+        
+        #eval += self.eval_fn_alive(state, currplayer)
+        
+        eval += self.eval_fn_kill(state, currplayer)
+        
+        #eval += self.eval_fn_random(state, currplayer)
+
+        return eval
+
+    # testing eval_function that makes piece to go to the other end
+    def eval_fn_end(self, state, currplayer):
+        eval = 0
+        board = state.board
+
+        # TO BE DELETED
+        #print(currplayer)
+
+        normalpiece = ""
+        kingpiece = ""
+        list = self.playerdict[currplayer]
+        if list[0] == "B":
+            normalpiece = "B"
+            kingpiece = "D"
+        elif list[0] == "W":
+            normalpiece = "W"
+            kingpiece = "V"
+
+        oponent = ""
+        if currplayer == "1":
+            oponent = "2"
+        elif currplayer == "2":
+            oponent = "1"
+        opplist = self.playerdict[oponent]
+        
+        # for player 1 (B,D), you want to go 0
+        if currplayer == "1":
+            for i in range(0, len(board)):
+                for j in range(0, len(board[0])):
+                    if board[i][j] in self.playerdict["1"]:
+                        points = 8-i
+                        eval+=points
+        # for player 1 (W,V), you want to go 7
+        elif currplayer == "2":
+            for i in range(0, len(board)):
+                for j in range(0, len(board[0])):
+                    if board[i][j] in self.playerdict["2"]:
+                        points = i
+                        eval+=points
+
+        return eval
+
+    # testing eval_function that makes piece go closer to oponent pieces
+    # TODO: think about how to make furthest piece to move
+    def eval_fn_die(self, state, currplayer):
+        eval = 0
+        board = state.board
+
+        normalpiece = ""
+        kingpiece = ""
+        list = self.playerdict[currplayer]
+        if list[0] == "B":
+            normalpiece = "B"
+            kingpiece = "D"
+        elif list[0] == "W":
+            normalpiece = "W"
+            kingpiece = "V"
+
+        oponent = ""
+        if currplayer == "1":
+            oponent = "2"
+        elif currplayer == "2":
+            oponent = "1"
+
+        # only if the piece is king then you want to go kill
+        for i in range(0, len(board)):
+            for j in range(0, len(board[0])):
+                if board[i][j] in list:
+                    score = 16
+                    top = i
+                    btm = i
+                    lft = j
+                    rgt = j
+                    found = False
+                    while score < 1 and not found:
+                        top-=1
+                        btm+=1
+                        lft-=1
+                        rgt+=1
+                        if top > -1:
+                            if lft > -1:
+                                if board[top][lft] in self.playerdict[oponent]:
+                                    eval+=score
+                                    found = True
+                                    if board[i][j] == kingpiece:
+                                        eval+=0
+                            if rgt < len(board[0]):
+                                if board[top][rgt] in self.playerdict[oponent]:
+                                    eval+=score
+                                    found = True
+                                    if board[i][j] == kingpiece:
+                                        eval+=0
+                        if btm  < len(board):
+                            if lft > -1:
+                                if board[btm][lft] in self.playerdict[oponent]:
+                                    eval+=score
+                                    found = True
+                                    if board[i][j] == kingpiece:
+                                        eval+=0
+                            if rgt < len(board[0]):
+                                if board[btm][rgt] in self.playerdict[oponent]:
+                                    eval+=score
+                                    found = True
+                                    if board[i][j] == kingpiece:
+                                        eval+=0
+                        score/=2
+        return eval
+
+    # testing eval_function that makes piece stay alive
+    def eval_fn_alive(self, state, currplayer):
+        eval = 100
+        board = state.board
+
+        normalpiece = ""
+        kingpiece = ""
+        list = self.playerdict[currplayer]
+        if list[0] == "B":
+            normalpiece = "B"
+            kingpiece = "D"
+        elif list[0] == "W":
+            normalpiece = "W"
+            kingpiece = "V"
+
+        oponent = ""
+        if currplayer == "1":
+            oponent = "2"
+        elif currplayer == "2":
+            oponent = "1"
+
+        oponentmove = self.get_all_actions(board, oponent)
+        hasjump = False
+        # TO BE DELETED
+        # print(oponentmove)
+        # check if first action is jump, if it is, the list contains jump move
+        if oponentmove:
+            firstmove = oponentmove[0]
+            checkjump = firstmove[0][0] - firstmove[len(firstmove)-1][0]
+            # below is not jump move
+            if abs(checkjump) > 1:
+                hasjump = True
+            if hasjump == True:
+                deduction = 2
+                for i in range(0, len(oponentmove)):
+                    eval-=deduction
+
+        return eval
+
+    # testing eval_function that makes piece to kill
+    def eval_fn_kill(self, state, currplayer):
+        eval = 0
+        board = state.board
+
+        oponent = ""
+        if currplayer == "1":
+            oponent = "2"
+        elif currplayer == "2":
+            oponent = "1"
+
+        points = 24
+        for i in range(0, len(board)):
+            for j in range(0, len(board[0])):
+                if board[i][j] in self.playerdict[oponent]:
+                    points-=2
+
+        eval+=points
+
+        return eval
+
+    # testing eval_function that add randomness 
+    def eval_fn_random(self, state, currplayer):
+        eval = random.randint(1, 4)
+
+        return eval

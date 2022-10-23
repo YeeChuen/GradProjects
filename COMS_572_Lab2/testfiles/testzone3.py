@@ -1,19 +1,10 @@
 # Author: Yee Chuen Teoh
-# filename: main
-# Title: COM S 572 Lab 2
-# Reference: Search (Chapters 6) textbook Artificial Intelligence_ A Modern Approach
-# Link: https://github.com/aimacode/aima-python
+# Title: testzone3
 
-# file description
-# --
 
-# imports
 from checkersgame import *
 from time import time
 import time
-
-# ______________________________________________________________________________
-# Main run file
 
 game = checkers()
 print("currently playing: ")
@@ -130,4 +121,3 @@ elif int(choice) == 4:
 
 print("")
 print("--- end checkers ---")
-
